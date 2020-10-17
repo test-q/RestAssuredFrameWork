@@ -16,10 +16,9 @@ public class ExcelUtil {
 	private static Sheet sheet;
 	
 	public static Object[][] getTestData(String sheetName) {
-	
-			FileInputStream fi;
+	 
 			try {
-				fi = new FileInputStream(TESTDATA_SHEETPATH);
+				FileInputStream fi = new FileInputStream(TESTDATA_SHEETPATH);
 				book  = WorkbookFactory.create(fi);
 				sheet = book.getSheet(sheetName);
 				

@@ -119,6 +119,7 @@ public class RestClient {
 			break;
 		case "DELETE":
 			response = request.delete(serviceUrl);
+			break;
 		default:
 			System.out.println("Please Pass Correct HTTP Method....");
 			break;
