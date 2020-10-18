@@ -17,18 +17,23 @@ public class GetUserTest {
 	String serviceUrl = "/public-api/users";
 	String token = "0ea226be7a379cc3f7951c9841679e1b584bcb4e3601914b1626b444726ee655";
 	Map<String, String> tokenMap = new HashMap<String, String>();
+	JsonPath jpath;
 	
 	@Test
 	public void getAllUser_WithoutQueryParam_Test() {
 		tokenMap.put("Authorization", "Bearer " + token);
 		Response response = RestClient.doGet(domainUrl, serviceUrl, tokenMap, "JSON", null, true);
-		JsonPath jpath = response.jsonPath();
-		System.out.println("Status Code: " + response.getStatusCode());
-		Assert.assertEquals(response.getStatusCode(), 200);
-	    System.out.println(response.prettyPrint());	
-	    
-	    int limit = jpath.get("meta.pagination.limit");
-	    Assert.assertEquals(limit, 20);	    
+		
+		RestClient.getPrettyResponsePrint(response);
+		RestClient.getStatusCode(response);
+		jpath = RestClient.getJsonPath(response);
+		int pageLimit =  jpath.get("meta.pagination.limit");
+		Assert.assertEquals(pageLimit, 20);
+		
+		String serverName = RestClient.getHeaderValue(response, "Server");
+		Assert.assertEquals(serverName, "nginx");
+		
+		System.out.println(RestClient.getResponseHeaders(response));
 	}
 	
 	@Test
