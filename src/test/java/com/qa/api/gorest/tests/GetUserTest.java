@@ -16,10 +16,12 @@ public class GetUserTest {
 	String domainUrl = "https://gorest.co.in";
 	String serviceUrl = "/public-api/users";
 	String token = "0ea226be7a379cc3f7951c9841679e1b584bcb4e3601914b1626b444726ee655";
+	Map<String, String> tokenMap = new HashMap<String, String>();
 	
 	@Test
 	public void getAllUser_WithoutQueryParam_Test() {
-		Response response = RestClient.doGet(domainUrl, serviceUrl, token, "JSON", null, true);
+		tokenMap.put("Authorization", "Bearer " + token);
+		Response response = RestClient.doGet(domainUrl, serviceUrl, tokenMap, "JSON", null, true);
 		JsonPath jpath = response.jsonPath();
 		System.out.println("Status Code: " + response.getStatusCode());
 		Assert.assertEquals(response.getStatusCode(), 200);
@@ -31,11 +33,13 @@ public class GetUserTest {
 	
 	@Test
 	public void getUser_WithQueryParam_Test() {
+		tokenMap.put("Authorization", "Bearer " + token);
+		
 		Map<String, String> userParam = new HashMap<String, String>();
 		userParam.put("name", "Goswami Varma");
 		userParam.put("gender", "Male");
 		
-		Response response = RestClient.doGet(domainUrl, serviceUrl, token, "JSON", userParam, true);
+		Response response = RestClient.doGet(domainUrl, serviceUrl, tokenMap, "JSON", userParam, true);
 		JsonPath jpath = response.jsonPath();
 		System.out.println("Status Code: " + response.getStatusCode());
 		Assert.assertEquals(response.getStatusCode(), 200);

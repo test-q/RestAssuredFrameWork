@@ -1,5 +1,6 @@
 package com.qa.api.gorest.tests;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.testng.Assert;
@@ -30,9 +31,10 @@ public class Imgur_AccountBlockStatus_Test {
 	}
 	
 	@Test
-	public void checkAccountBlockStatus_Test() {
+	public void AccountBlockStatus_Test() {
 		serviceUrl = "/account/v1/" + accountUsername + "/block";
-		Response response = RestClient.doGet(domainUrl, serviceUrl, accessToken, null, null, true);
+		Map<String, String> bearerTokenMap = GenerateToken.getBearerToken();
+		Response response = RestClient.doGet(domainUrl, serviceUrl, bearerTokenMap, null, null, true);
 		System.out.println("Status Code: " + response.getStatusCode());
 		Assert.assertEquals(response.getStatusCode(), 200);
 		System.out.println("Response Body: " + response.prettyPrint());
@@ -40,14 +42,29 @@ public class Imgur_AccountBlockStatus_Test {
 	}
 	
 	@Test
-	public void checkAccountImage_Test() {
+	public void AccountImage_Test() {
 		serviceUrl = "/3/account/me/images";
-		Response response = RestClient.doGet(domainUrl, serviceUrl, accessToken, null, null, true);
+		Map<String, String> bearerTokenMap = GenerateToken.getBearerToken();
+		Response response = RestClient.doGet(domainUrl, serviceUrl, bearerTokenMap, null, null, true);
 		System.out.println("Status Code: " + response.getStatusCode());
 		Assert.assertEquals(response.getStatusCode(), 200);
 		System.out.println("Response Body: " + response.prettyPrint());
 		response.then().assertThat().body("success", equalTo(true));		
 		
+	}
+	
+	@Test
+	public void uploadImage_Test() {
+		serviceUrl = "/3/upload";
+		Map<String, String> clientTokenMap = GenerateToken.getClientId();
+		
+		Map<String, String> bodyFormMap = new HashMap<String, String>();
+		bodyFormMap.put("title", "Imgur Image T1");
+		bodyFormMap.put("description", "Nice Image");
+		
+		Response response = RestClient.doPost(domainUrl, serviceUrl, clientTokenMap, "multipart", null, bodyFormMap, true);
+		System.out.println("Status Code: " + response.getStatusCode());
+		System.out.println("Body: " + response.prettyPrint());
 	}
 	
 

@@ -1,5 +1,6 @@
 package com.qa.api.gorest.restclient;
 
+import java.io.File;
 import java.util.Map;
 
 import com.qa.api.gorest.util.TestUtil;
@@ -29,7 +30,7 @@ public class RestClient {
 	 * @param log
 	 * @return Response from GET Call
 	 */
-	public static Response doGet(String domainUrl, String serviceUrl, String token, String contentType, Map<String, String> paramMap, boolean log) {
+	public static Response doGet(String domainUrl, String serviceUrl, Map<String, String> token, String contentType, Map<String, String> paramMap, boolean log) {
 		if(setDomainUrl(domainUrl)) {
 			RequestSpecification request = createRequest(token,contentType,paramMap, log);
 			return getResponse("GET",request, serviceUrl);		
@@ -48,14 +49,26 @@ public class RestClient {
 	 * @param log
 	 * @return Response from POST Call
 	 */
-	public static Response doPost(String domainUrl, String serviceUrl, String token, String contentType, Map<String, String> paramMap, Object pojoObj, boolean log) {
+	public static Response doPost(String domainUrl, String serviceUrl, Map<String, String> token, String contentType, Map<String, String> queryParamMap, Object pojoObj, boolean log) {
 		if(setDomainUrl(domainUrl)) {
-			RequestSpecification request = createRequest(token, contentType, paramMap, log);
-			String jsonPayload = TestUtil.getSerializedJSON(pojoObj);
-			request.body(jsonPayload);
+			RequestSpecification request = createRequest(token, contentType, queryParamMap, log);
+			addPayload(request, pojoObj);
 			return getResponse("POST", request, serviceUrl);
 		}
 		return null;	
+	}
+	
+	private static void addPayload(RequestSpecification request, Object pojoObj) {
+		if (pojoObj instanceof Map) { 
+			//The java instanceof operator is used to test whether the object is an instance of the specified type 
+			//The instanceof in java is also known as type comparison operator because it compares the instance with type. 
+			//It returns either true or false. If we apply the instanceof operator with any variable that has null value, it returns false.
+			request.formParams((Map<String, String>) pojoObj); // here we type cast Object to Map
+		} else {
+			String jsonPayload = TestUtil.getSerializedJSON(pojoObj);
+			request.body(jsonPayload);
+		}
+
 	}
 	
 	
@@ -74,7 +87,7 @@ public class RestClient {
 	}
 	
 	
-	private static RequestSpecification createRequest(String token, String contentType, Map<String, String> paramMap, boolean log) {
+	private static RequestSpecification createRequest(Map<String, String> tokenMap, String contentType, Map<String, String> queryParamMap, boolean log) {
 		RequestSpecification request = null;
 		
 		if(log) {
@@ -83,12 +96,13 @@ public class RestClient {
 			request = RestAssured.given();
 		}
 		
-		if(token != null) {
-			request.header("Authorization", "Bearer " + token);
+		if(tokenMap.size() > 0) {
+			//tokenMap is map hence check size if size is not zero/null that time only execute this if statement.
+			request.headers(tokenMap);
 		}
 	
-		if(paramMap != null) {
-			request.queryParams(paramMap);
+		if(queryParamMap != null) {
+			request.queryParams(queryParamMap);
 		}
 		
 		if(contentType != null) {
@@ -98,6 +112,9 @@ public class RestClient {
 				request.contentType(ContentType.XML);
 			}else if(contentType.equalsIgnoreCase("TEXT")){
 				request.contentType(ContentType.TEXT);
+			}else if(contentType.equalsIgnoreCase("MULTIPART")){
+				//There is no ContentType as "multipart" so how to add "multipart" content type.
+				request.multiPart("image", new File("C:/Users/rupal/OneDrive/Pictures/Saved Pictures/1.jpg"));
 			}
 		}
 		return request;
