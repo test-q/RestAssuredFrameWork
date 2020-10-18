@@ -1,14 +1,19 @@
 package com.qa.api.gorest.restclient;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 import com.qa.api.gorest.util.TestUtil;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.http.Header;
+import io.restassured.http.Headers;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import junit.framework.Assert;
 
 /**
  * This class is having all HTTP methods which will call the APIs and having generic methods
@@ -69,6 +74,15 @@ public class RestClient {
 			request.body(jsonPayload);
 		}
 
+	}
+	
+	public static Response doPut(String domainUrl, String serviceUrl, Map<String, String> token, String contentType, Map<String, String> queryParamMap, Object pojoObj, boolean log) {
+		if(setDomainUrl(domainUrl)) {
+			RequestSpecification request = createRequest(token, contentType, queryParamMap, log);
+			addPayload(request, pojoObj);
+			return getResponse("PUT", request, serviceUrl);
+		}
+		return null;
 	}
 	
 	
@@ -145,5 +159,84 @@ public class RestClient {
 		return response;
 		
 	}
+	
+	/**
+	 * This method Validate response status code
+	 * @param response
+	 */
+	public static void getStatusCode(Response response) {
+		if(response != null) {
+			int code = response.getStatusCode();
+			System.out.println("Response Status Code Is: " +code);
+			Assert.assertEquals(200, code);
+		}else {
+			System.out.println("Something wrong in Response.");
+		}
+	}
+	
+	/**
+	 * This method return json path
+	 * @param response
+	 * @return JsonPath
+	 */
+	public static JsonPath getJsonPath(Response response) {
+		if(response != null) {
+			JsonPath jPath = response.jsonPath();
+			return jPath;
+		}else {
+			System.out.println("Something wrong in Response");
+			return null;
+		}	
+	}
+	
+	/**
+	 * This method return Header Name
+	 * @param response
+	 * @param headerName
+	 * @return Header Name in string format
+	 */
+	public static String getHeaderValue(Response response, String headerName) {
+		if(response != null) {
+			return response.getHeader(headerName);
+		}else {
+			System.out.println("Something wrong in Response");
+			return null;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param response
+	 * @return Header size 
+	 */
+	public static int getResponseHeaderCount(Response response) {
+		Headers headers = response.getHeaders();
+		System.out.println("Response Header Count Is : " +headers.size());
+		return headers.size();
+	}
+
+	/**
+	 * 
+	 * @param response
+	 * @return
+	 */
+	public static List<Header> getResponseHeaders(Response response) {
+		Headers headers = response.getHeaders();
+		List<Header> headerList = headers.asList();
+		System.out.println("==============Response Header List==============");
+		System.out.println(headerList);
+		System.out.println("===============================================");
+		return headerList;
+	}
+
+	/**
+	 * This method display Response in Pretty Print format
+	 * @param response
+	 */
+	public static void getPrettyResponsePrint(Response response) {
+		System.out.println("==============Response In Pretty Format============");
+		response.prettyPrint();
+	}
+	
 
 }
