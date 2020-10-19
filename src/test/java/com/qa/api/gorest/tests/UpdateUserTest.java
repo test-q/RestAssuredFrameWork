@@ -2,6 +2,7 @@ package com.qa.api.gorest.tests;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -27,20 +28,22 @@ public class UpdateUserTest {
 	CreateUser userPojo;
 	Object[][] createUserdata;
 	Object[][] updateUserdata;
-	
+	String updatedServiceUrl;
+
 	@BeforeMethod
 	public void setUp() {
-		//Set Token
-		goRestTokenMap.put("Authorization", "Bearer " +token);	
-	}	
+		// Set Token
+		goRestTokenMap.put("Authorization", "Bearer " + token);
+	}
+
 	@Test
 	public void updateSingleUserDetails_Test() {
-		//To update data, I have to create data first and than update it
+		// To update data, I have to create data first and than update it
 		userPojo = new CreateUser("Kanika", "kanika14@gmail.com", "Female", "Active");
-		
+
 		response = RestClient.doPost(domainUrl, serviceUrl, goRestTokenMap, "JSON", null, userPojo, true);
-		
-		//Apply Assertion/Validation For POST Call
+
+		// Apply Assertion/Validation For POST Call
 		RestClient.getPrettyResponsePrint(response);
 		RestClient.getResponseHeaders(response);
 		RestClient.getStatusCode(response);
@@ -50,17 +53,17 @@ public class UpdateUserTest {
 		jpath = RestClient.getJsonPath(response);
 		int userId = jpath.get("data.id");
 		System.out.println("User Id: " + userId);
-		
+
 		System.out.println("==============USER CREATED SUCCESSFULLY==============");
-		
-		//Update user with PUT 
-		String updatedServiceUrl = serviceUrl + userId;
-		System.out.println("Updated Service URL: " +updatedServiceUrl);
+
+		// Update user with PUT
+		updatedServiceUrl = serviceUrl + userId;
+		System.out.println("Updated Service URL: " + updatedServiceUrl);
 		userPojo = new CreateUser("Kanika", "kanika16@gmail.com", "Female", "Inactive");
-		
+
 		response = RestClient.doPut(domainUrl, updatedServiceUrl, goRestTokenMap, "JSON", null, userPojo, true);
-		
-		//Apply Assertion/Validation For PUT Call
+
+		// Apply Assertion/Validation For PUT Call
 		RestClient.getPrettyResponsePrint(response);
 		RestClient.getResponseHeaders(response);
 		RestClient.getStatusCode(response);
@@ -68,35 +71,24 @@ public class UpdateUserTest {
 		headerValue = RestClient.getHeaderValue(response, "Server");
 		Assert.assertEquals(headerValue, "nginx");
 		jpath = RestClient.getJsonPath(response);
-		
+
 		System.out.println("==============USER UPDATED SUCCESSFULLY==============");
-		
+
 	}
-	
-	
-	
-	
-	
-	
-	//How to update multiple users with data provider concept
+
+	// How to update multiple users with data provider concept
 	@DataProvider()
 	public Object[][] createUserData() {
 		createUserdata = ExcelUtil.getTestData("CreateUser");
 		return createUserdata;
 	}
-	
-	@DataProvider()
-	public Object[][] updateUserData() {
-		updateUserdata = ExcelUtil.getTestData("CreateUser");
-		return updateUserdata;
-	}
-	
+
 	@Test(dataProvider = "createUserData")
 	public void updateMultipleUserDetails_Test(String name, String email, String gender, String status) {
-		CreateUser userPojo = new CreateUser(name, email, gender, status);
+		userPojo = new CreateUser(name, email, gender, status);
 		response = RestClient.doPost(domainUrl, serviceUrl, goRestTokenMap, "JSON", null, userPojo, true);
-		
-		//Apply Assertion/Validation
+
+		// Apply Assertion/Validation
 		RestClient.getPrettyResponsePrint(response);
 		RestClient.getResponseHeaders(response);
 		RestClient.getStatusCode(response);
@@ -106,11 +98,36 @@ public class UpdateUserTest {
 		jpath = RestClient.getJsonPath(response);
 		int userId = jpath.get("data.id");
 		System.out.println("User Id: " + userId);
-		
+
 		System.out.println("==============USER CREATED SUCCESSFULLY==============");
-		
-		
+
+		// Update User
+		updatedServiceUrl = serviceUrl + userId;
+		System.out.println("Updated Service URL Is: " + updatedServiceUrl);
+
+		// Generate Random Email ID To Update Users
+		Random randomGenerator = new Random();
+		int randomInt = randomGenerator.nextInt(1000);
+		String actualname = jpath.get("data.name");
+		String updatedEmail = actualname + randomInt + "@gmail.com";
+		System.out.println("Updated Email Id Is: " + updatedEmail);
+		String updatedStatus = "Inactive";
+		System.out.println("Updated Status Is: " + updatedStatus);
+		userPojo = new CreateUser(name, updatedEmail, gender, updatedStatus);
+
+		response = RestClient.doPut(domainUrl, updatedServiceUrl, goRestTokenMap, "JSON", null, userPojo, true);
+
+		// Apply Assertion/Validation For PUT Call
+		RestClient.getPrettyResponsePrint(response);
+		RestClient.getResponseHeaders(response);
+		RestClient.getStatusCode(response);
+		RestClient.getResponseHeaderCount(response);
+		headerValue = RestClient.getHeaderValue(response, "Server");
+		Assert.assertEquals(headerValue, "nginx");
+		jpath = RestClient.getJsonPath(response);
+
+		System.out.println("==============USER UPDATED SUCCESSFULLY==============");
+
 	}
-	
 
 }
