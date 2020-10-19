@@ -35,9 +35,9 @@ public class RestClient {
 	 * @param log
 	 * @return Response from GET Call
 	 */
-	public static Response doGet(String domainUrl, String serviceUrl, Map<String, String> token, String contentType, Map<String, String> paramMap, boolean log) {
+	public static Response doGet(String domainUrl, String serviceUrl, Map<String, String> token, String contentType, Map<String, String> queryParamMap, boolean log) {
 		if(setDomainUrl(domainUrl)) {
-			RequestSpecification request = createRequest(token,contentType,paramMap, log);
+			RequestSpecification request = createRequest(token,contentType,queryParamMap, log);
 			return getResponse("GET",request, serviceUrl);		
 		}	
 		return null;
@@ -81,6 +81,14 @@ public class RestClient {
 			RequestSpecification request = createRequest(token, contentType, queryParamMap, log);
 			addPayload(request, pojoObj);
 			return getResponse("PUT", request, serviceUrl);
+		}
+		return null;
+	}
+	
+	public static Response doDelete(String domainUrl, String serviceUrl, Map<String, String> token, String contentType, Map<String, String> queryParamMap, boolean log) {
+		if(setDomainUrl(domainUrl)) {
+			RequestSpecification request = createRequest(token, contentType, queryParamMap, log);
+			return getResponse("DELETE", request, serviceUrl);
 		}
 		return null;
 	}

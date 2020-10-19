@@ -1,6 +1,11 @@
 package com.qa.api.gorest.util;
 
+import java.io.File;
+import java.io.IOException;
+
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TestUtil {
@@ -22,5 +27,21 @@ public class TestUtil {
 		}
 		return jsonstring;
 	}
+	
+//	public static Object getDeserializPojo(String filePath, Object obj) {
+//		Object vObj = null;
+//		ObjectMapper mapper = new ObjectMapper();
+//		try {
+//			vObj = mapper.readValue(new File(filePath), obj.getClass());
+//		} catch (JsonParseException e) {
+//			e.printStackTrace();
+//		} catch (JsonMappingException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		System.out.println(vObj);
+//		return vObj;
+//	}
 
 }
