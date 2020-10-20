@@ -37,7 +37,7 @@ public class DeleteUserTest {
 	@Test
 	public void deleteSingleUserDetails_Test() {
 		// To delete data, I have to create data first and than delete it
-		userPojo = new CreateUser("Nayana", "nayana1@gmail.com", "Female", "Inactive");
+		userPojo = new CreateUser("Nayan", "nayan17@gmail.com", "Female", "Inactive");
 
 		response = RestClient.doPost(domainUrl, serviceUrl, goRestTokenMap, "JSON", null, userPojo, true);
 
@@ -76,12 +76,12 @@ public class DeleteUserTest {
 	
 	@DataProvider
 	public Object[][] getUserData() {
-		Object[][] userData = ExcelUtil.getTestData("CreateUser");
+		Object[][] userData = ExcelUtil.getTestData("DeleteUser");
 		return userData;
 	}
 	
 	@Test(dataProvider = "getUserData")
-	public void createUser_WithDataProvider_Test(String name, String email, String gender, String status) {
+	public void deleteUser_WithDataProvider_Test(String name, String email, String gender, String status) {
 		
 		
 		CreateUser userPojo_Obj = new CreateUser(name, email, gender, status);

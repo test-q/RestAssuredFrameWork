@@ -39,7 +39,7 @@ public class UpdateUserTest {
 	@Test
 	public void updateSingleUserDetails_Test() {
 		// To update data, I have to create data first and than update it
-		userPojo = new CreateUser("Kanika", "kanika14@gmail.com", "Female", "Active");
+		userPojo = new CreateUser("priti", "priti1@gmail.com", "Female", "Active");
 
 		response = RestClient.doPost(domainUrl, serviceUrl, goRestTokenMap, "JSON", null, userPojo, true);
 
@@ -59,7 +59,7 @@ public class UpdateUserTest {
 		// Update user with PUT
 		updatedServiceUrl = serviceUrl + userId;
 		System.out.println("Updated Service URL: " + updatedServiceUrl);
-		userPojo = new CreateUser("Kanika", "kanika16@gmail.com", "Female", "Inactive");
+		userPojo = new CreateUser("Priti", "priti.sawant1@gmail.com", "Female", "Inactive");
 
 		response = RestClient.doPut(domainUrl, updatedServiceUrl, goRestTokenMap, "JSON", null, userPojo, true);
 
@@ -79,7 +79,7 @@ public class UpdateUserTest {
 	// How to update multiple users with data provider concept
 	@DataProvider()
 	public Object[][] createUserData() {
-		createUserdata = ExcelUtil.getTestData("CreateUser");
+		createUserdata = ExcelUtil.getTestData("UpdateUser");
 		return createUserdata;
 	}
 
