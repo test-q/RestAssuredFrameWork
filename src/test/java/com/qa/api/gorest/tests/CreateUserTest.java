@@ -23,7 +23,7 @@ public class CreateUserTest {
 	public void createSingleUser_Test() {
 		tokenMap.put("Authorization", "Bearer " + token);
 		
-		CreateUser userPojo_Obj = new CreateUser("Vaiti", "vaiti17@gmail.com", "Female", "Inactive");
+		CreateUser userPojo_Obj = new CreateUser("Vaiti", "vaiti18@gmail.com", "Female", "Inactive");
 		Response response = RestClient.doPost(domainUrl, serviceUrl, tokenMap, "JSON", null, userPojo_Obj, true);
 		
 		System.out.println("Status Code: " + response.getStatusCode());

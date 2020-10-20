@@ -37,7 +37,7 @@ public class DeleteUserTest {
 	@Test
 	public void deleteSingleUserDetails_Test() {
 		// To delete data, I have to create data first and than delete it
-		userPojo = new CreateUser("Nayan", "nayan17@gmail.com", "Female", "Inactive");
+		userPojo = new CreateUser("Nayan", "nayan18@gmail.com", "Female", "Inactive");
 
 		response = RestClient.doPost(domainUrl, serviceUrl, goRestTokenMap, "JSON", null, userPojo, true);
 
